@@ -48,7 +48,7 @@ public class CSVReader implements Runnable {
                                     break;
                             }
                             index++;
-                            resultMap.put(rowObject.getPrice(), rowObject);
+                            resultMap.put(new CSV_Key(rowObject.getPrice(), rowObject.getProductID()), rowObject);
                         }
                     }
                 }

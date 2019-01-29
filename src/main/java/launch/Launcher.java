@@ -1,6 +1,7 @@
 package launch;
 
 import analysis.CSVReader;
+import analysis.CSV_Key;
 import analysis.ResultMap;
 import make.CSVFileMaker;
 import make.RowObject;
@@ -56,9 +57,9 @@ public class Launcher {
         }
 
         try (BufferedWriter bufWriter = new BufferedWriter(new FileWriter(new File("output.csv")))) {
-            for (Map.Entry<Float, RowObject> row: resultMap.entrySet()) {
-                index = (int) (Math.random() * (rows.length() - 1));
-                bufWriter.write(rows.get(index));
+            for (Map.Entry<CSV_Key, RowObject> row: resultMap.entrySet()) {
+                повторить в цикле нужное кол-во раз
+                bufWriter.write(row.getValue().toString());
                 bufWriter.newLine();
             }
         } catch (IOException e) {
