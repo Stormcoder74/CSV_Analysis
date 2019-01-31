@@ -1,6 +1,8 @@
 package make;
 
-public class RowObject {
+import java.util.Objects;
+
+public class RowObject implements Comparable<RowObject> {
 //    public static final int NAMES_DIAPASON = 1_000_000_000;
     private static final int NAMES_DIAPASON = 1_000_000;
     private static final int PRICE_DIAPASON = 10_000;
@@ -69,5 +71,12 @@ public class RowObject {
                 condition + "," +
                 state + "," +
                 price;
+    }
+
+    @Override
+    public int compareTo(RowObject rowObject) {
+        int priceDifference = (int) (price * 100 - rowObject.price * 100);
+
+        return priceDifference;
     }
 }

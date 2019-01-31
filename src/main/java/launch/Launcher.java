@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
 public class Launcher {
@@ -39,28 +38,35 @@ public class Launcher {
     private static void analysis(String dir){
         Semaphore semaphore = new Semaphore(NUMBER_OF_THREADS);
         ResultMap resultMap = new ResultMap();
-        String[] files =  new File(dir).list();
+//        String[] files =  new File(dir).list();
+        String[] files = {"0.csv"} ;
         List<Thread> threads = new ArrayList<>(NUMBER_OF_THREADS);
+
         for(String fileName: files){
-            threads.add(new Thread(new CSVReader(
+            Thread thread = new Thread(new CSVReader(
                     new File(dir + File.separator + fileName)
                     , resultMap
                     , semaphore
-            )));
+            ));
+            thread.start();
+            System.out.println(thread.getName() + " started");
+            threads.add(thread);
         }
-        for (Thread thread: threads){
+        threads.iterator().forEachRemaining(element -> {
             try {
-                thread.join();
+                element.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        });
 
         try (BufferedWriter bufWriter = new BufferedWriter(new FileWriter(new File("output.csv")))) {
-            for (Map.Entry<CSV_Key, RowObject> row: resultMap.entrySet()) {
-                повторить в цикле нужное кол-во раз
-                bufWriter.write(row.getValue().toString());
-                bufWriter.newLine();
+            for (Map.Entry<RowObject, Integer> row: resultMap.entrySet()) {
+
+                for (int i = 0; i < row.getValue(); i++) {
+                    bufWriter.write(row.getKey().toString());
+                    bufWriter.newLine();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

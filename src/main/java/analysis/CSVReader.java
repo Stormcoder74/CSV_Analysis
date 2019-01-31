@@ -23,7 +23,7 @@ public class CSVReader implements Runnable {
             semaphore.acquire();
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
-                while ((line = reader.readLine()) != null || line.isEmpty()){
+                while ((line = reader.readLine())!= null){
                     RowObject rowObject = new RowObject("empty");
                     int index = 0;
                     try (Scanner scanner = new Scanner(line)){
@@ -48,9 +48,9 @@ public class CSVReader implements Runnable {
                                     break;
                             }
                             index++;
-                            resultMap.put(new CSV_Key(rowObject.getPrice(), rowObject.getProductID()), rowObject);
                         }
                     }
+                    resultMap.put(rowObject, 0);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,6 +60,7 @@ public class CSVReader implements Runnable {
             e.printStackTrace();
         } finally {
             semaphore.release();
+            System.out.println(Thread.currentThread().getName() + "  finished");
         }
     }
 }
