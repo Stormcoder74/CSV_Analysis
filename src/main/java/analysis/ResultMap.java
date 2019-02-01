@@ -2,11 +2,13 @@ package analysis;
 
 import make.RowObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
-public class ResultMap extends TreeMap<RowObject, Integer> {
+public class ResultMap extends TreeMap<Float, List<RowObject>> {
     private static final int NUMBER_OF_RESULT_ROWS = 1000;
-    public static final int NUMBER_OF_SOME_ROWS = 20;
+    private static final int NUMBER_OF_SOME_ROWS = 20;
 
     private int totalRows;
     private int counter = 0;
@@ -16,32 +18,31 @@ public class ResultMap extends TreeMap<RowObject, Integer> {
         totalRows = 0;
     }
 
-    @Override
-    public synchronized Integer put(RowObject rowObject, Integer amount) {
-        Integer result = null;
+    public synchronized void insert(RowObject rowObject) {
         counter++;
 
-        if (get(rowObject) == null &&
+        if (get(rowObject.getPrice()) == null &&
                 (totalRows < NUMBER_OF_RESULT_ROWS ||
-                        rowObject.getPrice() < lastKey().getPrice())) {
-            result = super.put(rowObject, 1);
+                        rowObject.getPrice() < lastKey())) {
+            List<RowObject> list = new ArrayList<>();
+            list.add(rowObject);
+            super.put(rowObject.getPrice(), list);
             totalRows++;
-        } else if ((rowObject.getPrice() < lastKey().getPrice() ||
+        } else if ((rowObject.getPrice() < lastKey() ||
                 totalRows < NUMBER_OF_RESULT_ROWS) &&
-                get(rowObject) < NUMBER_OF_SOME_ROWS) {
-            result = replace(rowObject, get(rowObject) + 1);
+                get(rowObject.getPrice()).size() < NUMBER_OF_SOME_ROWS) {
+            get(rowObject.getPrice()).add(rowObject);
             totalRows++;
         }
 
         if (totalRows > NUMBER_OF_RESULT_ROWS) {
-            if (get(lastKey()) > 1) {
-                replace(lastKey(), get(lastKey()) - 1);
+            List<RowObject> list = get(lastKey());
+            if (list.size() > 1) {
+                list.remove(list.size() - 1);
             } else {
                 remove(lastKey());
             }
             totalRows--;
         }
-
-        return result;
     }
 }

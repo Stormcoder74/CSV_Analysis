@@ -38,8 +38,8 @@ public class Launcher {
     private static void analysis(String dir){
         Semaphore semaphore = new Semaphore(NUMBER_OF_THREADS);
         ResultMap resultMap = new ResultMap();
-//        String[] files =  new File(dir).list();
-        String[] files = {"0.csv"} ;
+        String[] files =  new File(dir).list();
+//        String[] files = {"0.csv"} ;
         List<Thread> threads = new ArrayList<>(NUMBER_OF_THREADS);
 
         for(String fileName: files){
@@ -61,12 +61,15 @@ public class Launcher {
         });
 
         try (BufferedWriter bufWriter = new BufferedWriter(new FileWriter(new File("output.csv")))) {
-            for (Map.Entry<RowObject, Integer> row: resultMap.entrySet()) {
-
-                for (int i = 0; i < row.getValue(); i++) {
-                    bufWriter.write(row.getKey().toString());
-                    bufWriter.newLine();
-                }
+            for (Map.Entry<Float, List<RowObject>> row: resultMap.entrySet()) {
+                row.getValue().iterator().forEachRemaining(element -> {
+                    try {
+                        bufWriter.write(element.toString());
+                        bufWriter.newLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         } catch (IOException e) {
             e.printStackTrace();

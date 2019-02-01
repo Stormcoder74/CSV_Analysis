@@ -50,7 +50,7 @@ public class CSVReader implements Runnable {
                             index++;
                         }
                     }
-                    resultMap.put(rowObject, 0);
+                    resultMap.insert(rowObject);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

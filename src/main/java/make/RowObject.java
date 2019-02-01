@@ -1,7 +1,5 @@
 package make;
 
-import java.util.Objects;
-
 public class RowObject implements Comparable<RowObject> {
 //    public static final int NAMES_DIAPASON = 1_000_000_000;
     private static final int NAMES_DIAPASON = 1_000_000;
