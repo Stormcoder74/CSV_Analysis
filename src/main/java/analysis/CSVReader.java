@@ -21,6 +21,8 @@ public class CSVReader implements Runnable {
     public void run() {
         try {
             semaphore.acquire();
+            System.out.println(Thread.currentThread().getName() + "  started");
+
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine())!= null){

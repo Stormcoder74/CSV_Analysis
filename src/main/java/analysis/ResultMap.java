@@ -2,11 +2,9 @@ package analysis;
 
 import make.RowObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
-public class ResultMap extends TreeMap<Float, List<RowObject>> {
+public class ResultMap extends TreeMap<Float, TreeMap<RowObject, Integer>> {
     private static final int NUMBER_OF_RESULT_ROWS = 1000;
     private static final int NUMBER_OF_SOME_ROWS = 20;
 
@@ -20,27 +18,37 @@ public class ResultMap extends TreeMap<Float, List<RowObject>> {
 
     public synchronized void insert(RowObject rowObject) {
         counter++;
+        Map<RowObject, Integer> resultMapItem = get(rowObject.getPrice());
 
-        if (get(rowObject.getPrice()) == null &&
+        if (resultMapItem == null &&
                 (totalRows < NUMBER_OF_RESULT_ROWS ||
                         rowObject.getPrice() < lastKey())) {
-            List<RowObject> list = new ArrayList<>();
-            list.add(rowObject);
-            super.put(rowObject.getPrice(), list);
+            TreeMap<RowObject, Integer> productIdMap = new TreeMap<>(Comparator.comparingInt(RowObject::getProductID));
+            productIdMap.put(rowObject, 1);
+            super.put(rowObject.getPrice(), productIdMap);
             totalRows++;
         } else if ((rowObject.getPrice() < lastKey() ||
-                totalRows < NUMBER_OF_RESULT_ROWS) &&
-                get(rowObject.getPrice()).size() < NUMBER_OF_SOME_ROWS) {
-            get(rowObject.getPrice()).add(rowObject);
+                totalRows < NUMBER_OF_RESULT_ROWS)) {
+            Integer productIdCounter = resultMapItem.get(rowObject);
+            if (productIdCounter == null){
+                resultMapItem.put(rowObject, 1);
+            }else if (productIdCounter < NUMBER_OF_SOME_ROWS) {
+                get(rowObject.getPrice()).replace(rowObject, productIdCounter + 1);
+            }
             totalRows++;
         }
 
         if (totalRows > NUMBER_OF_RESULT_ROWS) {
-            List<RowObject> list = get(lastKey());
-            if (list.size() > 1) {
-                list.remove(list.size() - 1);
+            TreeMap<RowObject, Integer> productIdMap = get(lastKey());
+            int count = productIdMap.get(productIdMap.lastKey());
+            if (count > 1) {
+                productIdMap.replace(productIdMap.lastKey(), count - 1);
             } else {
-                remove(lastKey());
+                if (productIdMap.size() > 1) {
+                    productIdMap.remove(productIdMap.lastKey());
+                } else {
+                    remove(lastKey());
+                }
             }
             totalRows--;
         }
