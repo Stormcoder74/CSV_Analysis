@@ -8,16 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
-public class CSVFileMaker implements Runnable {
+public class CSVFileWriter implements Runnable {
     //    private static final int NUMBER_OF_ROWS = 10_000_000;
-    private static final int NUMBER_OF_ROWS = 100_000;
+    private static final int NUMBER_OF_ROWS = 10_000;
 
     private RowRegistry rows;
     private String dir;
     private String fileName;
     private Semaphore semaphore;
 
-    public CSVFileMaker(RowRegistry rows, String dir, String fileName, Semaphore semaphore) {
+    public CSVFileWriter(RowRegistry rows, String dir, String fileName, Semaphore semaphore) {
         this.rows = rows;
         this.dir = dir;
         this.fileName = fileName;

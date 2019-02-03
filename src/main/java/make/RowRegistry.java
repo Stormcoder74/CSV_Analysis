@@ -2,7 +2,7 @@ package make;
 
 public class RowRegistry {
 //    private static final int SIZE = 100_000_000;
-    private static final int SIZE = 1_000_000;
+    private static final int SIZE = 100_000;
     private String[] rows;
 
     public RowRegistry() {

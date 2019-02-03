@@ -1,10 +1,7 @@
 package make;
 
-import java.util.Objects;
-
 public class RowObject implements Comparable<RowObject> {
-//    public static final int NAMES_DIAPASON = 1_000_000_000;
-    private static final int NAMES_DIAPASON = 1_000_000;
+    private static final int NAMES_DIAPASON = 1_000_000_000;
     private static final int PRICE_DIAPASON = 10_000;
 
     private static int nextID = 10;
@@ -32,24 +29,12 @@ public class RowObject implements Comparable<RowObject> {
         this.productID = productID;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getCondition() {
-        return condition;
-    }
-
     public void setCondition(String condition) {
         this.condition = condition;
-    }
-
-    public String getState() {
-        return state;
     }
 
     public void setState(String state) {
@@ -75,8 +60,6 @@ public class RowObject implements Comparable<RowObject> {
 
     @Override
     public int compareTo(RowObject rowObject) {
-        int priceDifference = (int) (price * 100 - rowObject.price * 100);
-
-        return priceDifference;
+        return (int) (price * 100 - rowObject.price * 100);
     }
 }
