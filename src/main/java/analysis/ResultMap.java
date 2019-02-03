@@ -2,14 +2,15 @@ package analysis;
 
 import make.RowObject;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ResultMap extends TreeMap<Float, TreeMap<RowObject, Integer>> {
     private static final int NUMBER_OF_RESULT_ROWS = 1000;
     private static final int NUMBER_OF_SOME_ROWS = 20;
 
     private int totalRows;
-    private int counter = 0;
 
     public ResultMap() {
         super();
@@ -17,7 +18,6 @@ public class ResultMap extends TreeMap<Float, TreeMap<RowObject, Integer>> {
     }
 
     public synchronized void insert(RowObject rowObject) {
-        counter++;
         Map<RowObject, Integer> resultMapItem = get(rowObject.getPrice());
 
         if (resultMapItem == null &&
@@ -32,10 +32,11 @@ public class ResultMap extends TreeMap<Float, TreeMap<RowObject, Integer>> {
             Integer productIdCounter = resultMapItem.get(rowObject);
             if (productIdCounter == null){
                 resultMapItem.put(rowObject, 1);
+                totalRows++;
             }else if (productIdCounter < NUMBER_OF_SOME_ROWS) {
                 get(rowObject.getPrice()).replace(rowObject, productIdCounter + 1);
+                totalRows++;
             }
-            totalRows++;
         }
 
         if (totalRows > NUMBER_OF_RESULT_ROWS) {
